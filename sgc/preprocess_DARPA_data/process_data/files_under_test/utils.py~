@@ -1,0 +1,36 @@
+import pandas as pd
+from sklearn.feature_selection import VarianceThreshold
+from sklearn.svm import LinearSVC
+from sklearn.feature_selection import SelectFromModel
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.datasets import load_iris
+from sklearn.feature_selection import SelectFromModel
+
+def feature_analysis(X,y):
+	# Removing features with low variance
+	sel = VarianceThreshold(threshold=(.8 * (1 - .8)))
+	X_new_var = sel.fit_transform(X)
+	print('X_new_var:',X_new_var.shape)
+	
+	# L1-based feature selection
+	lsvc = LinearSVC(C=0.01, penalty="l1", dual=False).fit(X, y)
+	model = SelectFromModel(lsvc, prefit=True)
+	X_new_lsvc = model.transform(X)
+	print('X_new_var: ',X_new_var.shape)
+
+	# Tree-based feature selection
+	clf = ExtraTreesClassifier(n_estimators=50)
+	clf = clf.fit(X, y)
+	clf.feature_importances_  
+	model = SelectFromModel(clf, prefit=True)
+	X_new_etc = model.transform(X)
+	print('X_new_var: ',X_new_var.shape)
+
+	return 
+
+def feature_selection():
+	return 
+
+X = [[1,0,1],[1,0,0],[0,0,0],[1,1,0]]
+y = [1,2,3,4]
+feature_analysis(X,y)
